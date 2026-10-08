@@ -34,6 +34,10 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json({ limit: "10kb" }));
+app.use((req, res, next) => {
+  res.setHeader("ngrok-skip-browser-warning", "true");
+  next();
+});
 app.use("/api/patients", patientRoutes);
 
 // Global rate limiter
