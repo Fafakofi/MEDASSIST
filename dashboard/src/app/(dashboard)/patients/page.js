@@ -22,12 +22,22 @@ export default function PatientsPage() {
   const [scheduleForm, setScheduleForm]   = useState({ frequency: "daily", times: ["08:00"], withFood: false });
   const [scheduling, setScheduling]   = useState(false);
 
-  useEffect(() => {
-    api.get("/patients")
-      .then(({ data }) => setPatients(data))
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
+    useEffect(() => {
+      api.get("/patients")
+        .then(({ data }) => {
+          if (Array.isArray(data)) {
+            setPatients(data);
+          } else {
+            console.error("Unexpected patients response:", data);
+            setPatients([]);
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to load patients:", err);
+          setPatients([]);
+        })
+        .finally(() => setLoading(false));
+      }, []);
 
   const loadOverview = async (patientId) => {
     setSelected(patientId);
@@ -209,7 +219,7 @@ export default function PatientsPage() {
                 <div className="grid grid-cols-4 gap-3">
                   {[
                     { label: "Medications",  value: overview.summary.totalMedications },
-                    { label: "Adherence",    value: overview.summary.adherenceRate !== null ? `${overview.summary.adherenceRate}%` : "N/A", color: adherenceColor(overview.summary.adherenceRate) },
+                    { label: "Adherence", value: (overview.summary.adherenceRate !== null && overview.summary.adherenceRate !== undefined) ? `${overview.summary.adherenceRate}%` : "N/A" },
                     { label: "Active alerts", value: overview.summary.activeAlerts,       color: overview.summary.activeAlerts > 0 ? "text-red-500" : "text-gray-800" },
                     { label: "Flagged SEs",  value: overview.summary.flaggedSideEffects,  color: overview.summary.flaggedSideEffects > 0 ? "text-yellow-600" : "text-gray-800" },
                   ].map(({ label, value, color = "text-gray-800" }) => (

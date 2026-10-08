@@ -41,8 +41,13 @@ export default function OverviewPage() {
     const totalMeds     = valid.reduce((sum, o) => sum + o.summary.totalMedications, 0);
     const totalAlerts   = valid.reduce((sum, o) => sum + o.summary.activeAlerts, 0);
     const totalFlagged  = valid.reduce((sum, o) => sum + o.summary.flaggedSideEffects, 0);
-    const rates         = valid.map((o) => o.summary.adherenceRate).filter((r) => r !== null);
-    const avgAdherence  = rates.length > 0 ? Math.round(rates.reduce((a, b) => a + b, 0) / rates.length) : null;
+    const rates = valid
+    .map((o) => o.summary.adherenceRate)
+    .filter((r) => r !== null && r !== undefined && !isNaN(r));
+      const avgAdherence = rates.length > 0
+    ? Math.round(rates.reduce((a, b) => a + b, 0) / rates.length)
+    : null;
+    
 
     // Collect all alerts and refills across patients
     const allAlerts  = valid.flatMap((o) => o.alerts || []);
@@ -119,7 +124,7 @@ export default function OverviewPage() {
         />
         <StatCard
           label="Avg adherence"
-          value={stats.adherence !== null ? `${stats.adherence}%` : "N/A"}
+          value={(stats.adherence !== null && stats.adherence !== undefined) ? `${stats.adherence}%` : "N/A"}
           sub="Across all patients"
           subColor={stats.adherence >= 80 ? "text-green-500" : stats.adherence >= 50 ? "text-yellow-500" : "text-red-500"}
         />

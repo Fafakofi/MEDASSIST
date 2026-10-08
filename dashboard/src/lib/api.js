@@ -4,6 +4,9 @@ const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api",
 });
 
+// Temporary debug log
+console.log("API Base URL:", process.env.NEXT_PUBLIC_API_URL);
+
 // Automatically attach token to every request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -24,5 +27,7 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+
 
 export default api;
