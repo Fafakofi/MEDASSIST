@@ -173,6 +173,14 @@ export default function LoginPage() {
             </button>
           </form>
 
+          {/* Register Link */}
+          <div className="flex items-center justify-center gap-1 mt-4">
+            <span className="text-xs text-gray-400">Dont have an account?</span>
+            <a href="/register" className="text-xs text-[#4a9ede] hover:underline font-medium">
+              Create one
+            </a>
+          </div>
+
           <p className="text-xs text-gray-300 text-center mt-8 leading-relaxed">
             This system is a decision-support tool only and does not replace professional medical advice.
           </p>
